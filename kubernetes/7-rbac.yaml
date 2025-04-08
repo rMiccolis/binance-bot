@@ -3,7 +3,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: api-access
-  namespace: binance-b
+  namespace: binance_bot
 rules:
   - apiGroups: [""]
     resources: ["pods", "pods/log"]
@@ -16,11 +16,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: api-access
-  namespace: binance-b
+  namespace: binance_bot
 subjects:
   - kind: ServiceAccount
     name: default
-    namespace: binance-b
+    namespace: binance_bot
 roleRef:
   kind: Role
   name: api-access

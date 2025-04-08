@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: server
-  namespace: binance-b
+  namespace: binance_bot
   labels:
     app: server
 spec:
@@ -28,7 +28,7 @@ spec:
             cpu: 200m
         ports:
         - containerPort: 3000
-        env: 
+        env:
         - name: MONGODB_USERNAME
           valueFrom:
            secretKeyRef:
