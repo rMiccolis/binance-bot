@@ -1,0 +1,10 @@
+[
+    {
+        "health": "Ok"
+    },
+    {
+        "name": "initialized_db",
+        "type": "database_seed",
+        "status": 1
+    }
+]

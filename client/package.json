@@ -1,0 +1,41 @@
+{
+  "name": "client",
+  "version": "0.0.0",
+  "scripts": {
+    "serve": "vite preview",
+    "build": "vite build",
+    "dev": "vite --port 8080",
+    "preview": "vite preview --port 5050",
+    "resources": "capacitor-resources -p android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^5.7.8",
+    "@capacitor/app": "^5.0.8",
+    "@capacitor/core": "^5.7.8",
+    "@capacitor/ios": "^5.7.8",
+    "@mdi/font": "5.9.55",
+    "@popperjs/core": "^2.11.8",
+    "axios": "^0.27.2",
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "dotenv": "^16.4.5",
+    "lodash": "^4.17.21",
+    "pinia": "^2.2.2",
+    "roboto-fontface": "^0.10.0",
+    "vue": "^3.2.33",
+    "vue-router": "^4.4.3",
+    "vuetify": "^3.7.0",
+    "webfontloader": "^1.6.28"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^5.7.8",
+    "@rollup/plugin-dynamic-import-vars": "^1.4.4",
+    "@vitejs/plugin-vue": "^2.3.4",
+    "@vuetify/vite-plugin": "^1.0.0-alpha.0",
+    "sass": "^1.77.8",
+    "sass-loader": "^10.5.2",
+    "vite": "^2.9.18",
+    "vue-cli-plugin-vuetify": "~2.4.8",
+    "vuetify-loader": "^2.0.0-alpha.0"
+  }
+}

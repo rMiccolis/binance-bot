@@ -1,0 +1,18 @@
+{
+  "appId": "com.binanceb.app",
+  "appName": "BinanceB",
+  "webDir": "dist",
+  "server": {
+    "hostname": "${load_balancer_dns_name}",
+    "androidScheme": "https",
+    "url": "https://${load_balancer_dns_name}"
+  },
+  "android": {
+    "allowMixedContent": true
+  },
+  "plugins": {
+    "CapacitorCookies": {
+      "enabled": true
+    }
+  }
+}
