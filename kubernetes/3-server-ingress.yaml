@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: server-ingress
-  namespace: binance_bot
+  namespace: binance-bot
   annotations:
     nginx.ingress.kubernetes.io/upstream-hash-by: $remote_addr
     nginx.ingress.kubernetes.io/rewrite-target: /$1

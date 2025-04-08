@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: server-configmap
-  namespace: binance_bot
+  namespace: binance-bot
 data:
   JOB_IMAGE_NAME: $docker_username/${docker_server_repository_name}_job
   NODE_ENV: develop

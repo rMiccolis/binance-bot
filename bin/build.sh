@@ -60,7 +60,7 @@ fi
 ###############################################################################
 # Build docker images from server and client applications
 # cd into project root directory
-cd $repository_root_dir/binance_bot/
+cd $repository_root_dir/binance-bot/
 
 echo -e "${LBLUE}Pulling code...${WHITE}"
 # source /home/$USER/.profile
@@ -68,8 +68,8 @@ git checkout .
 git checkout $github_branch_name
 git pull origin $github_branch_name
 cd ..
-chmod -R u+x binance_bot
-cd $repository_root_dir/binance_bot/
+chmod -R u+x binance-bot
+cd $repository_root_dir/binance-bot/
 
 
 # if either client and server are not passed as argument set them to 1 (meaning we build both)
@@ -85,11 +85,11 @@ if [ "$client" == "1" ]; then
 # fi
 # before building images we have to set a .env file to pass client its environment variables
 echo -e "${LBLUE}Setting Server IP for client environment...${WHITE}"
-cat << EOF | tee $repository_root_dir/binance_bot/client/.env.production > /dev/null
+cat << EOF | tee $repository_root_dir/binance-bot/client/.env.production > /dev/null
 VITE_SERVER_URI="$protocol://$app_server_addr/server/"
 EOF
 
-envsubst < $repository_root_dir/binance_bot/client/capacitor.config.json | tee $repository_root_dir/binance_bot/client/capacitor.config.json > /dev/null
+envsubst < $repository_root_dir/binance-bot/client/capacitor.config.json | tee $repository_root_dir/binance-bot/client/capacitor.config.json > /dev/null
 
 # Start building docker client image
 echo -e "${LBLUE}Building client docker image...${WHITE}"
@@ -112,6 +112,6 @@ echo -e "${LBLUE}Pushing docker image to dockerhub...${WHITE}"
 # Push generated server docker image to docker hub
 sudo docker push $docker_username/$docker_server_repository_name:latest
 sudo docker push $docker_username/${docker_server_repository_name}_job:latest
-server_replica_count=$(kubectl get deployment -n binance_bot server -o jsonpath='{.spec.replicas}')
+server_replica_count=$(kubectl get deployment -n binance-bot server -o jsonpath='{.spec.replicas}')
 kubectl -n binance-b scale --replicas=0 deployment server; kubectl -n binance-b scale --replicas=$server_replica_count deployment server
 fi

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: server
-  namespace: binance_bot
+  namespace: binance-bot
   labels:
     app: server
 spec:
