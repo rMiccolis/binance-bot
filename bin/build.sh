@@ -29,7 +29,6 @@ usage(){
 }
 
 while getopts ":c:s:b:p:i:d:" opt; do
-echo $opt
   case $opt in
     c) client="$OPTARG"
     ;;
@@ -62,6 +61,14 @@ if [ -z "$docker_username" ]; then
     usage
     exit
 fi
+
+# Debug: stampa i valori ricevuti
+echo "client: $client"
+echo "server: $server"
+echo "branch: $github_branch_name"
+echo "protocol: $protocol"
+echo "ip: $app_server_addr"
+echo "docker_username: $docker_username"
 
 ###############################################################################
 # Build docker images from server and client applications
