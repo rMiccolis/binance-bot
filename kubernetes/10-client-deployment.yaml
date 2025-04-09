@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: client
-        image: $docker_username/$docker_client_repository_name
+        image: ${docker_username}/${docker_client_repository_name}
         imagePullPolicy: "Always"
         resources:
           requests:

@@ -6,7 +6,7 @@ metadata:
   labels:
     app: server
 spec:
-  replicas: $server_replica_count
+  replicas: ${server_replica_count}
   selector:
     matchLabels:
       app: server
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: $docker_username/$docker_server_repository_name
+        image: ${docker_username}/${docker_server_repository_name}
         imagePullPolicy: "Always"
         resources:
           limits:

@@ -25,9 +25,6 @@ usage(){
   echo ""
   echo "  $0 -s 1 -b master -p https -du docker_username -ip 10.11.1.1 => will build just server"
   echo ""
-  echo "Options:"
-  echo "  pass 1 if you want to build client or server. If no arguments are provided, then both client and server will be built"
-  echo ""
   exit
 }
 
