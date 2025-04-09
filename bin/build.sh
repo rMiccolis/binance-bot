@@ -14,21 +14,22 @@ usage(){
   echo ""
   echo " -p http (available options: http - https) => tell the script to use http protocol for contacting server"
   echo ""
-  echo " -ip server ip address (MANDATORY) => tell the script the server ip address"
+  echo " -i server ip address (MANDATORY) => tell the script the server ip address"
   echo ""
-  echo " -du docker username (MANDATORY) => tell the script your docker username to push the images"
+  echo " -d docker username (MANDATORY) => tell the script your docker username to push the images"
   echo ""
   echo "Usage:"
-  echo "  $0 -s 1 -c 1 -b master -du rmiccolis -ip your_ip_domain.com => will build both server and client"
+  echo "  $0 -s 1 -c 1 -b master -d rmiccolis -i your_ip_domain.com => will build both server and client"
   echo ""
-  echo "  $0 -s 1 -b master -du docker_username -ip your_ip_domain.com => will build just server"
+  echo "  $0 -s 1 -b master -d docker_username -i your_ip_domain.com => will build just server"
   echo ""
-  echo "  $0 -s 1 -b master -p https -du docker_username -ip 10.11.1.1 => will build just server"
+  echo "  $0 -s 1 -b master -p https -d docker_username -i 10.11.1.1 => will build just server"
   echo ""
   exit
 }
 
-while getopts ":c:s:b:p:ip:du:" opt; do
+while getopts ":c:s:b:p:i:d:" opt; do
+echo $opt
   case $opt in
     c) client="$OPTARG"
     ;;
@@ -38,9 +39,9 @@ while getopts ":c:s:b:p:ip:du:" opt; do
     ;;
     p) protocol="$OPTARG"
     ;;
-    ip) app_server_addr="$OPTARG"
+    i) app_server_addr="$OPTARG"
     ;;
-    du) docker_username="$OPTARG"
+    d) docker_username="$OPTARG"
     ;;
     \?) usage
         exit
@@ -54,6 +55,10 @@ if [ -z "$github_branch_name" ]; then github_branch_name='master'; fi
 # if protocol is not passed as input parameter set default protocol to http
 if [ -z "$protocol" ]; then protocol='https'; fi
 if [ -z "$app_server_addr" ]; then
+    usage
+    exit
+fi
+if [ -z "$docker_username" ]; then
     usage
     exit
 fi
