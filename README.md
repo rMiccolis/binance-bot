@@ -26,3 +26,10 @@ Then you can just apply those files in kubernetes with
 ```
     kubectl apply -f ./kubernetes/
 ```
+
+## Reaching webapp:
+Now you can reach the webapp at ${app_server_addr} (the variable you have substituted inside 3-server-ingress.yaml)
+
+# NB.
+This kubernetes configuration is intended to be run on a kubernetes cluster that already has a mongodb deployed and which has a letsencrypt certificate. This project is compatible with [HyperKube Project](https://github.com/rMiccolis/HyperKube).
+So for problems and more info visit that project page.
