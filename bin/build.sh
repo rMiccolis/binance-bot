@@ -109,7 +109,7 @@ echo -e "${LBLUE}Building client docker image...${WHITE}"
 sudo docker build -t $docker_username/binance_bot_client -f ./client/client.dockerfile ./client/
 # Push generated client docker image to docker hub
 sudo docker push $docker_username/binance_bot_client:latest
-kubectl -n binance-b scale --replicas=0 deployment client; kubectl -n binance-b scale --replicas=1 deployment client
+kubectl -n binance-bot scale --replicas=0 deployment client; kubectl -n binance-bot scale --replicas=1 deployment client
 fi
 
 if [ "$server" == "1" ]; then
@@ -126,5 +126,5 @@ echo -e "${LBLUE}Pushing docker image to dockerhub...${WHITE}"
 sudo docker push $docker_username/binance_bot_server:latest
 sudo docker push $docker_username/binance_bot_server_job:latest
 server_replica_count=$(kubectl get deployment -n binance-bot server -o jsonpath='{.spec.replicas}')
-kubectl -n binance-b scale --replicas=0 deployment server; kubectl -n binance-b scale --replicas=$server_replica_count deployment server
+kubectl -n binance-bot scale --replicas=0 deployment server; kubectl -n binance-bot scale --replicas=$server_replica_count deployment server
 fi
