@@ -16,12 +16,14 @@ usage(){
   echo ""
   echo " -ip server ip address (MANDATORY) => tell the script the server ip address"
   echo ""
+  echo " -du docker username (MANDATORY) => tell the script your docker username to push the images"
+  echo ""
   echo "Usage:"
-  echo "  $0 -s 1 -c 1 -b master -ip your_ip_domain.com => will build both server and client"
+  echo "  $0 -s 1 -c 1 -b master -du rmiccolis -ip your_ip_domain.com => will build both server and client"
   echo ""
-  echo "  $0 -s 1 -b master -ip your_ip_domain.com => will build just server"
+  echo "  $0 -s 1 -b master -du docker_username -ip your_ip_domain.com => will build just server"
   echo ""
-  echo "  $0 -s 1 -b master -p https -ip 10.11.1.1 => will build just server"
+  echo "  $0 -s 1 -b master -p https -du docker_username -ip 10.11.1.1 => will build just server"
   echo ""
   echo "Options:"
   echo "  pass 1 if you want to build client or server. If no arguments are provided, then both client and server will be built"
@@ -29,7 +31,7 @@ usage(){
   exit
 }
 
-while getopts ":c:s:b:p:ip:" opt; do
+while getopts ":c:s:b:p:ip:du:" opt; do
   case $opt in
     c) client="$OPTARG"
     ;;
@@ -39,7 +41,9 @@ while getopts ":c:s:b:p:ip:" opt; do
     ;;
     p) protocol="$OPTARG"
     ;;
-    p) app_server_addr="$OPTARG"
+    ip) app_server_addr="$OPTARG"
+    ;;
+    ip) docker_username="$OPTARG"
     ;;
     \?) usage
         exit
@@ -51,7 +55,7 @@ repository_root_dir="/home/$USER/apps"
 # if github_branch_name is not passed as input parameter set default branch to master
 if [ -z "$github_branch_name" ]; then github_branch_name='master'; fi
 # if protocol is not passed as input parameter set default protocol to http
-if [ -z "$protocol" ]; then protocol='http'; fi
+if [ -z "$protocol" ]; then protocol='https'; fi
 if [ -z "$app_server_addr" ]; then
     usage
     exit
@@ -93,25 +97,25 @@ envsubst < $repository_root_dir/binance-bot/client/capacitor.config.json | tee $
 
 # Start building docker client image
 echo -e "${LBLUE}Building client docker image...${WHITE}"
-sudo docker build -t $docker_username/$docker_client_repository_name -f ./client/client.dockerfile ./client/
+sudo docker build -t $docker_username/binance_bot_client -f ./client/client.dockerfile ./client/
 # Push generated client docker image to docker hub
-sudo docker push $docker_username/$docker_client_repository_name:latest
+sudo docker push $docker_username/binance_bot_client:latest
 kubectl -n binance-b scale --replicas=0 deployment client; kubectl -n binance-b scale --replicas=1 deployment client
 fi
 
 if [ "$server" == "1" ]; then
 echo -e "${LBLUE}Building server docker image...${WHITE}"
 # Start building docker server image
-sudo docker build -t $docker_username/$docker_server_repository_name -f ./server/docker/server.dockerfile ./server/
+sudo docker build -t $docker_username/binance_bot_server -f ./server/docker/server.dockerfile ./server/
 
 echo -e "${LBLUE}Building docker image for kubernetes jobs to be launched...${WHITE}"
 # Start building docker image for kubernetes jobs to be launched
-sudo docker build -t $docker_username/${docker_server_repository_name}_job -f ./server/docker/job.dockerfile ./server/
+sudo docker build -t $docker_username/binance_bot_server_job -f ./server/docker/job.dockerfile ./server/
 
 echo -e "${LBLUE}Pushing docker image to dockerhub...${WHITE}"
 # Push generated server docker image to docker hub
-sudo docker push $docker_username/$docker_server_repository_name:latest
-sudo docker push $docker_username/${docker_server_repository_name}_job:latest
+sudo docker push $docker_username/binance_bot_server:latest
+sudo docker push $docker_username/binance_bot_server_job:latest
 server_replica_count=$(kubectl get deployment -n binance-bot server -o jsonpath='{.spec.replicas}')
 kubectl -n binance-b scale --replicas=0 deployment server; kubectl -n binance-b scale --replicas=$server_replica_count deployment server
 fi
