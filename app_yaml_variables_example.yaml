@@ -1,0 +1,45 @@
+projects:
+  - name: mongodb
+    namespace: mongodb
+    port: 27017 # only to open port on nginx ingress-controller (not needed for standard ports like 80-443)
+    service_name: mongodb # useful only if 'projects.port' is set
+    github_repo: 'https://github.com/rMiccolis/mongodb.git'
+    deployment: 'true'
+    env:
+      - name: mongo_root_username
+        value: mongodb_username
+        base64_encoding: 'true'
+      - name: mongo_root_password
+        value: mongo_password
+        base64_encoding: 'true'
+      - name: mongodb_replica_count # set to 1. More than one replica not working for now 'cause multiple fisical hosts would be needed in order to use a different load balancer ip address for each replica
+        value: '1'
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  - name: binance-bot
+    github_repo: 'https://github.com/rMiccolis/binance-bot.git'
+    namespace: binance-bot
+    env:
+      - name: docker_username # used to push docker images inside your docker hub repository
+        value: docker_username
+      - name: mongo_root_username # mongodb username to connect to a mongo database
+        value: mongodb_username
+        base64_encoding: 'true'
+      - name: mongo_root_password # mongodb username to connect to a mongo database
+        value: mongo_password
+        base64_encoding: 'true'
+      - name: app_server_addr # your public ip where the server and client will be reachable (your public load balancer kubernetes cluster ip)
+        value: 'your_load_balancer_ip.com'
+      - name: server_replica_count # number of replicas for server deployment
+        value: '2'
+      - name: environment # useful for more or less logging info
+        value: 'production'
+      - name: server_access_token_secret # the key that will be used to encrypt and decrypt JWT saccess ession tokens
+        value: 'server_access_token_secret'
+        base64_encoding: 'true'
+      - name: server_refresh_token_secret # the key that will be used to encrypt and decrypt JWT refresh session tokens
+        value: 'server_refresh_token_secret'
+        base64_encoding: 'true'
+      - name: server_access_token_lifetime # the duration time of JWT access session tokens
+        value: '360'
+      - name: server_refresh_token_lifetime # the duration time of refresh JWT session tokens
+        value: '1440'
