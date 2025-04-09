@@ -55,6 +55,7 @@ const setTokens = async (tokenData, req, res, onlyAccessToken = false) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production", //https
             sameSite: "Strict",
+            path: '/auth/refresh'
             // domain: ,
         });
     }
@@ -87,7 +88,7 @@ const setBinanceConnection = async function (userId) {
 
     let apiKey = user.API_KEY;
     let apiSecret = user.API_SECRET;
-    
+
     const spotClient = new Spot(apiKey, apiSecret, { baseURL: baseUrl, wsURL: wsBaseUrl });
     global.users[userId] = { binanceSpotConnection: spotClient};
 };
@@ -117,8 +118,8 @@ const refresh = async (req, res) => {
         // check if received refresh_token is equal to the one stored in db
         for (const key in oldRefresh) {
             if (dbUserRefreshToken[key] != oldRefresh[key]) {
-                areEqualRefresh = false       
-                break         
+                areEqualRefresh = false
+                break
             }
         }
 
