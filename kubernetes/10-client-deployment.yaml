@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: client
-        image: ${docker_username}/${docker_client_repository_name}
+        image: ${docker_username}/binance_bot_client
         imagePullPolicy: "Always"
         resources:
           requests:
