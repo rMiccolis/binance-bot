@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: ${docker_username}/binance_bot_server_job
+        image: ${docker_username}/binance_bot_server
         imagePullPolicy: "Always"
         resources:
           limits:
