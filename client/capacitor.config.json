@@ -1,6 +1,6 @@
 {
-  "appId": "com.binanceb.app",
-  "appName": "BinanceB",
+  "appId": "com.binance-bot.app",
+  "appName": "Binance-bot",
   "webDir": "dist",
   "server": {
     "hostname": "${load_balancer_dns_name}",

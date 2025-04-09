@@ -1,4 +1,4 @@
-# BinanceB
+# Binance-bot
 
 This is a simple web app that features a crypto trading bot which works in lateral market conditions.
 The projects has
