@@ -40,7 +40,7 @@ while getopts ":c:s:b:p:ip:du:" opt; do
     ;;
     ip) app_server_addr="$OPTARG"
     ;;
-    ip) docker_username="$OPTARG"
+    du) docker_username="$OPTARG"
     ;;
     \?) usage
         exit
