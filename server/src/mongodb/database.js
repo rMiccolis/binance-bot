@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const fs = require("fs");
+const path = require('path');
+
 async function connectToMongo(db_host = "", db_port = "", db_username = "", db_password = "", db_name = "") {
     let connectionString = ""
     let printConnectionString = ""
@@ -12,16 +14,20 @@ async function connectToMongo(db_host = "", db_port = "", db_username = "", db_p
     }
     console.log(connectionString);
     console.log(`Trying to connect to mongoDB ${printConnectionString} ...`);
-    const pem_file_path = `${__dirname}\\tls.pem`
+    const serverRoot = path.resolve(__dirname, '../..');
+    const pem_file_path = `${serverRoot}\\mongodb-tls-cert.pem`
     let mongodb_options = {}
     if (fs.existsSync(pem_file_path)) {
-        console.log(`.pem File path exists at:\n${pem_file_path}`);
-        console.log("Connecting with tsl encryption...");
+        const data = fs.statSync(pem_file_path);
+        if (data.size > 0) {
+            console.log(`.pem File path exists at:\n${pem_file_path}`);
+            console.log("Connecting with tsl encryption...");
 
-        mongodb_options = {
-            tls: true,
-            tlsCAFile: pem_file_path,
-            tlsCertificateKeyFile: pem_file_path
+            mongodb_options = {
+                tls: true,
+                tlsCAFile: pem_file_path,
+                tlsCertificateKeyFile: pem_file_path
+            }
         }
     }
     let connection = await mongoose.createConnection(connectionString, mongodb_options).asPromise();
