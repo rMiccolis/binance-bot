@@ -102,7 +102,7 @@ db.connectToMongo(process.env.MONGODB_URI, process.env.MONGODB_PORT, process.env
 const startJobK8s = async () => {
     try {
 
-        const namespace = 'binance-b';
+        const namespace = 'binance-bot';
 
         // create job name
         let job_uuid = uuidv4().split('-').slice(3).join('-')
@@ -132,7 +132,7 @@ const startJobK8s = async () => {
 
         // create the job object
         const job = createJob(jobName, namespace, containers, "Never", 180, 2, 4)
-        
+
         // api call to kubernetes to create job
         const createJobRes = await batchV1Api.createNamespacedJob(namespace, job);
 
