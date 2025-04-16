@@ -18,17 +18,19 @@ usage(){
   echo ""
   echo " -d docker username (MANDATORY) => tell the script your docker username to push the images"
   echo ""
+  echo " -t use tls (MANDATORY) => tell the script to use the tls-cert.pem for mongodb connection. The script will take this file from /home/$USER/"
+  echo ""
   echo "Usage:"
-  echo "  $0 -s 1 -c 1 -b master -d rmiccolis -i your_ip_domain.com => will build both server and client"
+  echo "  $0 -s 1 -c 1 -b master -d rmiccolis -i your_ip_domain.com -t 1 => will build both server and client"
   echo ""
-  echo "  $0 -s 1 -b master -d docker_username -i your_ip_domain.com => will build just server"
+  echo "  $0 -s 1 -b master -d docker_username -i your_ip_domain.com -t 1 => will build just server"
   echo ""
-  echo "  $0 -s 1 -b master -p https -d docker_username -i 10.11.1.1 => will build just server"
+  echo "  $0 -s 1 -b master -p https -d docker_username -i 10.11.1.1 -t 1 => will build just server"
   echo ""
   exit
 }
 
-while getopts ":c:s:b:p:i:d:" opt; do
+while getopts ":c:s:b:p:i:d:t:" opt; do
   case $opt in
     c) client="$OPTARG"
     ;;
@@ -41,6 +43,8 @@ while getopts ":c:s:b:p:i:d:" opt; do
     i) app_server_addr="$OPTARG"
     ;;
     d) docker_username="$OPTARG"
+    ;;
+    d) tls="$OPTARG"
     ;;
     \?) usage
         exit
@@ -58,6 +62,10 @@ if [ -z "$app_server_addr" ]; then
     exit
 fi
 if [ -z "$docker_username" ]; then
+    usage
+    exit
+fi
+if [ -z "$tls" ]; then
     usage
     exit
 fi
@@ -113,18 +121,23 @@ kubectl -n binance-bot scale --replicas=0 deployment client; kubectl -n binance-
 fi
 
 if [ "$server" == "1" ]; then
-echo -e "${LBLUE}Building server docker image...${WHITE}"
-# Start building docker server image
-sudo docker build -t $docker_username/binance_bot_server -f ./server/docker/server.dockerfile ./server/
+  echo -e "${LBLUE}Building server docker image...${WHITE}"
 
-echo -e "${LBLUE}Building docker image for kubernetes jobs to be launched...${WHITE}"
-# Start building docker image for kubernetes jobs to be launched
-sudo docker build -t $docker_username/binance_bot_server_job -f ./server/docker/job.dockerfile ./server/
+  if [ "$tls" == "1" ]; then
+    # copy the tls file from $repository_root_dir/
+    cp "$repository_root_dir/tls-cert.pem" "$repository_root_dir/apps/binance-bot/server/"
+  fi
+  # Start building docker server image
+  sudo docker build -t $docker_username/binance_bot_server -f ./server/docker/server.dockerfile ./server/
 
-echo -e "${LBLUE}Pushing docker image to dockerhub...${WHITE}"
-# Push generated server docker image to docker hub
-sudo docker push $docker_username/binance_bot_server:latest
-sudo docker push $docker_username/binance_bot_server_job:latest
-server_replica_count=$(kubectl get deployment -n binance-bot server -o jsonpath='{.spec.replicas}')
-kubectl -n binance-bot scale --replicas=0 deployment server; kubectl -n binance-bot scale --replicas=$server_replica_count deployment server
+  echo -e "${LBLUE}Building docker image for kubernetes jobs to be launched...${WHITE}"
+  # Start building docker image for kubernetes jobs to be launched
+  sudo docker build -t $docker_username/binance_bot_server_job -f ./server/docker/job.dockerfile ./server/
+
+  echo -e "${LBLUE}Pushing docker image to dockerhub...${WHITE}"
+  # Push generated server docker image to docker hub
+  sudo docker push $docker_username/binance_bot_server:latest
+  sudo docker push $docker_username/binance_bot_server_job:latest
+  server_replica_count=$(kubectl get deployment -n binance-bot server -o jsonpath='{.spec.replicas}')
+  kubectl -n binance-bot scale --replicas=0 deployment server; kubectl -n binance-bot scale --replicas=$server_replica_count deployment server
 fi
