@@ -125,7 +125,7 @@ if [ "$server" == "1" ]; then
 
   if [ "$tls" == "1" ]; then
     # copy the tls file from $repository_root_dir/
-    cp "$repository_root_dir/tls/tls-cert.pem" "$repository_root_dir/apps/binance-bot/server/"
+    cp "$repository_root_dir/tls/tls-cert.pem" "$repository_root_dir/apps/binance-bot/server/mongodb-tls-cert.pem"
   fi
   # Start building docker server image
   sudo docker build -t $docker_username/binance_bot_server -f ./server/docker/server.dockerfile ./server/
