@@ -15,12 +15,12 @@ Run this script to build and deploy client and server images when you need to ap
 - -p http (available options: http - https) => tell the script to use http protocol for contacting server
 - -i server ip address (MANDATORY) => tell the script the server ip address
 - -d docker username (MANDATORY) => tell the script your docker username to push the images
-- -t use tls (MANDATORY) => tell the script to use the tls-cert.pem for mongodb connection. The script will take this file from /home/$USER/
+- -t use tls (MANDATORY) => tell the script to use the tls-cert.pem for mongodb connection. The script will take this file from /home/$USER/tls
 #### Usage:
 
 **IMPORTANT:**
 if you need tsl connection to mongodb you have to create a "mongodb-tls-cert.pem" inside ./server/
-The script will take this file from /home/$USER/
+The script will take this file from /home/$USER//tls
 
 -  ./bin/build.sh -s 1 -c 1 -b master -d rmiccolis -i your_ip_domain.com => will build both server and client
 -  ./bin/build.sh -s 1 -b master -d docker_username -i your_ip_domain.com => will build just server

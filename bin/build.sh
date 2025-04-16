@@ -18,7 +18,7 @@ usage(){
   echo ""
   echo " -d docker username (MANDATORY) => tell the script your docker username to push the images"
   echo ""
-  echo " -t use tls (MANDATORY) => tell the script to use the tls-cert.pem for mongodb connection. The script will take this file from /home/$USER/"
+  echo " -t use tls (MANDATORY) => tell the script to use the tls-cert.pem for mongodb connection. The script will take this file from /home/$USER/tls"
   echo ""
   echo "Usage:"
   echo "  $0 -s 1 -c 1 -b master -d rmiccolis -i your_ip_domain.com -t 1 => will build both server and client"
@@ -52,7 +52,7 @@ while getopts ":c:s:b:p:i:d:t:" opt; do
   esac
 done
 
-repository_root_dir="/home/$USER/apps"
+repository_root_dir="/home/$USER"
 # if github_branch_name is not passed as input parameter set default branch to master
 if [ -z "$github_branch_name" ]; then github_branch_name='master'; fi
 # if protocol is not passed as input parameter set default protocol to http
@@ -81,7 +81,7 @@ echo "docker_username: $docker_username"
 ###############################################################################
 # Build docker images from server and client applications
 # cd into project root directory
-cd $repository_root_dir/binance-bot/
+cd $repository_root_dir/apps/binance-bot/
 
 echo -e "${LBLUE}Pulling code...${WHITE}"
 # source /home/$USER/.profile
@@ -90,7 +90,7 @@ git checkout $github_branch_name
 git pull origin $github_branch_name
 cd ..
 chmod -R u+x binance-bot
-cd $repository_root_dir/binance-bot/
+cd $repository_root_dir/apps/binance-bot/
 
 
 # if either client and server are not passed as argument set them to 1 (meaning we build both)
@@ -106,11 +106,11 @@ if [ "$client" == "1" ]; then
 # fi
 # before building images we have to set a .env file to pass client its environment variables
 echo -e "${LBLUE}Setting Server IP for client environment...${WHITE}"
-cat << EOF | tee $repository_root_dir/binance-bot/client/.env.production > /dev/null
+cat << EOF | tee $repository_root_dir/apps/binance-bot/client/.env.production > /dev/null
 VITE_SERVER_URI="$protocol://$app_server_addr/server/"
 EOF
 
-envsubst < $repository_root_dir/binance-bot/client/capacitor.config.json | tee $repository_root_dir/binance-bot/client/capacitor.config.json > /dev/null
+envsubst < $repository_root_dir/apps/binance-bot/client/capacitor.config.json | tee $repository_root_dir/apps/binance-bot/client/capacitor.config.json > /dev/null
 
 # Start building docker client image
 echo -e "${LBLUE}Building client docker image...${WHITE}"
@@ -125,7 +125,7 @@ if [ "$server" == "1" ]; then
 
   if [ "$tls" == "1" ]; then
     # copy the tls file from $repository_root_dir/
-    cp "$repository_root_dir/tls-cert.pem" "$repository_root_dir/apps/binance-bot/server/"
+    cp "$repository_root_dir/tls/tls-cert.pem" "$repository_root_dir/apps/binance-bot/server/"
   fi
   # Start building docker server image
   sudo docker build -t $docker_username/binance_bot_server -f ./server/docker/server.dockerfile ./server/
