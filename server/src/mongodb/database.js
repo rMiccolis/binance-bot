@@ -15,7 +15,8 @@ async function connectToMongo(db_host = "", db_port = "", db_username = "", db_p
     console.log(connectionString);
     console.log(`Trying to connect to mongoDB ${printConnectionString} ...`);
     const serverRoot = path.resolve(__dirname, '../..');
-    const pem_file_path = `${serverRoot}\\mongodb-tls-cert.pem`
+    const pem_file_path = path.join(serverRoot, 'mongodb-tls-cert.pem');
+    // const pem_file_path = `${serverRoot}/mongodb-tls-cert.pem`
     let mongodb_options = {}
     if (fs.existsSync(pem_file_path)) {
         const data = fs.statSync(pem_file_path);
