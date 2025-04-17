@@ -39,5 +39,3 @@ Now you can reach the webapp at ${app_server_addr} (the variable you have substi
 # NB.
 This kubernetes configuration is intended to be run on a kubernetes cluster that already has a mongodb deployed and which has a letsencrypt certificate. This project is compatible with [HyperKube Project](https://github.com/rMiccolis/HyperKube).
 So for problems and more info visit that project page.
-
-### For HyperKube 'app_yaml_variables.yaml' values configurations see ./app_yaml_variables_example.yaml
