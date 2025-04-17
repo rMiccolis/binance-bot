@@ -44,7 +44,7 @@ while getopts ":c:s:b:p:i:d:t:" opt; do
     ;;
     d) docker_username="$OPTARG"
     ;;
-    d) tls="$OPTARG"
+    t) tls="$OPTARG"
     ;;
     \?) usage
         exit
