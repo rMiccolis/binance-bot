@@ -5,13 +5,10 @@ const path = require('path');
 async function connectToMongo(db_host = "", db_port = "", db_username = "", db_password = "", db_name = "") {
     let connectionString = ""
     let printConnectionString = ""
-    if (!db_username || !db_password) {
-        connectionString = `mongodb://${db_host}:${db_port}/${db_name}?authSource=admin`;
-        printConnectionString = `mongodb://${db_host}:${db_port}/${db_name}?authSource=admin`;
-    } else {
-        connectionString = `mongodb://${db_username}:${db_password}@${db_host}:${db_port}/${db_name}?authSource=admin`;
-        printConnectionString = `mongodb://${db_username}:********@${db_host}:${db_port}/${db_name}?authSource=admin`;
-    }
+
+    connectionString = `mongodb://${db_username}:${db_password}@${db_host}:${db_port}/${db_name}?authSource=admin`;
+    printConnectionString = `mongodb://${db_username}:********@${db_host}:${db_port}/${db_name}?authSource=admin`;
+
     console.log(connectionString);
     console.log(`Trying to connect to mongoDB ${printConnectionString} ...`);
     const serverRoot = path.resolve(__dirname, '../..');
@@ -27,7 +24,8 @@ async function connectToMongo(db_host = "", db_port = "", db_username = "", db_p
             mongodb_options = {
                 tls: true,
                 tlsCAFile: pem_file_path,
-                tlsCertificateKeyFile: pem_file_path
+                tlsCertificateKeyFile: pem_file_path,
+                // tlsAllowInvalidCertificates: true
             }
         }
     }
