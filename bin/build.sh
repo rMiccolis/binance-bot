@@ -18,7 +18,7 @@ usage(){
   echo ""
   echo " -d docker username (MANDATORY) => tell the script your docker username to push the images"
   echo ""
-  echo " -t use tls (MANDATORY) => tell the script to use the tls-cert.pem for mongodb connection. The script will take this file from /home/$USER/tls"
+  echo " -t use tls (MANDATORY) => tell the script to use the tls-cert.pem for mongodb connection. The script will take this file from /home/$USER/tls/mongodb/mongodb.pem"
   echo ""
   echo "Usage:"
   echo "  $0 -s 1 -c 1 -b master -d rmiccolis -i your_ip_domain.com -t 1 => will build both server and client"
@@ -125,7 +125,7 @@ if [ "$server" == "1" ]; then
 
   if [ "$tls" == "1" ]; then
     # copy the tls file from $repository_root_dir/
-    cp "$repository_root_dir/tls/tls-cert.pem" "$repository_root_dir/apps/binance-bot/server/mongodb-tls-cert.pem"
+    cp "$repository_root_dir/tls/mongodb/mongodb.pem" "$repository_root_dir/apps/binance-bot/server/mongodb-tls-cert.pem"
   fi
   # Start building docker server image
   sudo docker build -t $docker_username/binance_bot_server -f ./server/docker/server.dockerfile ./server/
