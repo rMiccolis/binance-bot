@@ -97,27 +97,34 @@ cd $repository_root_dir/apps/binance-bot/
 if [ -z "$client" ] && [ -z "$server" ]; then client=1; server=1; fi
 
 if [ "$client" == "1" ]; then
-# Set environment variable VITE_SERVER_URI
-# echo -e "${LBLUE}Setting Server IP address: Public or Private...${WHITE}"
-# cluster_ip=$master_host_ip
-# if [ "$environment" == "production" ]; then
-# echo -e "${LBLUE}Setting Server Public IP address: $load_balancer_public_ip ${WHITE}"
-# cluster_ip=$load_balancer_public_ip
-# fi
-# before building images we have to set a .env file to pass client its environment variables
-echo -e "${LBLUE}Setting Server IP for client environment...${WHITE}"
+  # Set environment variable VITE_SERVER_URI
+  # echo -e "${LBLUE}Setting Server IP address: Public or Private...${WHITE}"
+  # cluster_ip=$master_host_ip
+  # if [ "$environment" == "production" ]; then
+  # echo -e "${LBLUE}Setting Server Public IP address: $load_balancer_public_ip ${WHITE}"
+  # cluster_ip=$load_balancer_public_ip
+  # fi
+  # before building images we have to set a .env file to pass client its environment variables
+  echo -e "${LBLUE}Setting Server IP for client environment...${WHITE}"
 cat << EOF | tee $repository_root_dir/apps/binance-bot/client/.env.production > /dev/null
 VITE_SERVER_URI="$protocol://$app_server_addr/server/"
 EOF
 
-envsubst < $repository_root_dir/apps/binance-bot/client/capacitor.config.json | tee $repository_root_dir/apps/binance-bot/client/capacitor.config.json > /dev/null
+  envsubst < $repository_root_dir/apps/binance-bot/client/capacitor.config.json | tee $repository_root_dir/apps/binance-bot/client/capacitor.config.json > /dev/null
 
-# Start building docker client image
-echo -e "${LBLUE}Building client docker image...${WHITE}"
-sudo docker build -t $docker_username/binance_bot_client -f ./client/client.dockerfile ./client/
-# Push generated client docker image to docker hub
-sudo docker push $docker_username/binance_bot_client:latest
-kubectl -n binance-bot scale --replicas=0 deployment client; kubectl -n binance-bot scale --replicas=1 deployment client
+  # Start building docker client image
+  echo -e "${LBLUE}Building client docker image...${WHITE}"
+  sudo docker build -t $docker_username/binance_bot_client -f ./client/client.dockerfile ./client/
+  # Push generated client docker image to docker hub
+  sudo docker push $docker_username/binance_bot_client:latest
+
+  # check if deployment is already up
+  kubectl get deployment -n binance-bot client > /dev/null 2>&1
+  EXIT_CODE=$? # Capture the exit code immediately
+  if [ "$EXIT_CODE" -eq 0 ]; then
+    client_replica_count=$(kubectl get deployment -n binance-bot client -o jsonpath='{.spec.replicas}')
+    kubectl -n binance-bot scale --replicas=0 deployment client; kubectl -n binance-bot scale --replicas=$client_replica_count deployment client
+  fi
 fi
 
 if [ "$server" == "1" ]; then
@@ -138,6 +145,12 @@ if [ "$server" == "1" ]; then
   # Push generated server docker image to docker hub
   sudo docker push $docker_username/binance_bot_server:latest
   sudo docker push $docker_username/binance_bot_server_job:latest
-  server_replica_count=$(kubectl get deployment -n binance-bot server -o jsonpath='{.spec.replicas}')
-  kubectl -n binance-bot scale --replicas=0 deployment server; kubectl -n binance-bot scale --replicas=$server_replica_count deployment server
+
+  # check if deployment is already up
+  kubectl get deployment -n binance-bot server > /dev/null 2>&1
+  EXIT_CODE=$? # Capture the exit code immediately
+  if [ "$EXIT_CODE" -eq 0 ]; then
+    server_replica_count=$(kubectl get deployment -n binance-bot server -o jsonpath='{.spec.replicas}')
+    kubectl -n binance-bot scale --replicas=0 deployment server; kubectl -n binance-bot scale --replicas=$server_replica_count deployment server
+  fi
 fi
